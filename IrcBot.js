@@ -1,4 +1,5 @@
-var net = require('net');
+var net = require('net');//,
+	//Command = require('./command');
 
 /* Expose IrcBot */
 module.exports = IrcBot;
@@ -16,6 +17,7 @@ function IrcBot(options) {
 	var self = this;
 	self.opt = options;
 	self.conn = null;
+	self.nameRegex = new RegExp(':!'+self.opt.nick);
 }
 
 IrcBot.prototype.onData = function(data) {
@@ -24,7 +26,7 @@ IrcBot.prototype.onData = function(data) {
 	//Response of successful connection
 	if(/001/.test(data)) {
 		this.joinChannels();
-	};
+	}
 
 	//REPLY TO PINGS
 	if(/PING/.test(data)) {
@@ -32,14 +34,13 @@ IrcBot.prototype.onData = function(data) {
 	}
 
 	//SOMEONE CALLING MAH NAME
-	if(/PRIVMSG #testmillsroom :!testbot123/.test(data)){
+	if(/PRIVMSG/.test(data) && this.nameRegex.test(data)) {
 		var cut = data.indexOf('PRIVMSG')+36;
 		this.parseMessage(data.substr(cut));
 	}
 };
 
 IrcBot.prototype.onConnect = function(data) {
-	//console.log('connect event');
 	this.sendMessage('USER ' + this.opt.nick + ' testbot testbot :testbot123');
 	this.sendMessage('NICK ' + this.opt.nick);
 };
@@ -51,13 +52,17 @@ IrcBot.prototype.onConnect = function(data) {
 IrcBot.prototype.parseMessage = function(message) {
 
 	console.log('message: '+message);
+	var commands = this.opt.commands;
 
-	if(/HELLO/.test(message)) {
-		console.log('sending hello...');
-		this.sendMessage('PRIVMSG #testmillsroom :hello');
-	} else {
-		this.sendMessage('PRIVMSG #testmillsroom :I have no clue what you are asking me.');
-	}
+	for(var i=0;i<commands.length;i++) {
+		if(commands[i].test(message)) {
+			var results = commands[i].action(message);
+			for(var j=0;j<results.length;j++) {
+				this.sendMessage(results[j]);
+			}
+			break;
+		}
+	}	
 };
 
 /*
@@ -70,7 +75,6 @@ IrcBot.prototype.joinChannels = function() {
 	for(i=0; i<channels.length;i++) {
 		this.sendMessage('JOIN '+channels[i]);
 	}
-
 };
 
 IrcBot.prototype.sendMessage = function(message) {
