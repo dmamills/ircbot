@@ -1,39 +1,23 @@
 var IrcBot = require('./IrcBot'),
-	Command = require('./command');
+    Command = require('./command');
 
 
-/*
-  commands format
-
-   commands:  [
-	{regex:/something/},
-	 action:function(){ returns an array of things to send }
-   ]
-*/
+function onHello(args) {
+    return (args.isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Dont PM me!'] :
+                              ['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '!'];
+}
 
 var commands = [
-	new Command(/HELLO/,function(m){return ['PRIVMSG #testmillsroom :hello!'];}),
+    new Command('Hello','echos hello back', /HELLO/ ,onHello)
 ];
 
-/*
-var commands = [
-	{ regex:/HELLO/,
-	  action:function(m) {
-	  	return ['PRIVMSG #testmillsroom :hello!'];
-	  } 
-	}
-];*/
-
-
 var options = { 
-	host:'irc.freenode.net',
-	port:6667,
-	nick:'testbot123',
-	channels: ['#testmillsroom'],
-	commands:commands
+    host:'irc.freenode.net',
+    port:6667,
+    nick:'testbot123',
+    channels: ['#testmillsroom'],
+    commands:commands
 };
 
 var ircbot = new IrcBot(options);
 ircbot.connect();
-
-
