@@ -31,7 +31,7 @@ Example:
 
 ```javascript
    var c = new Command('Hello','echos back hello and the speakers name',/HELLO/,function(args) {
-      return (isPrivate) ? ['PRIVMSG ' + args.speakername + ':Dont PM me!'] :['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '!'];
+      return (isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Dont PM me!'] :['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '!'];
    });
 ```
 

@@ -3,8 +3,8 @@ var IrcBot = require('./IrcBot'),
 
 
 function onHello(args) {
-    return (args.isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Dont PM me!'] :
-                              ['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '!'];
+    return (args.isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Hello ' + args.speakername + ' args: '+ args.args] :
+                              ['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '! args: '+ args.args];
 }
 
 var commands = [

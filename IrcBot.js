@@ -59,14 +59,13 @@ IrcBot.prototype.generateMessageArgs = function(dataArr,isPrivate) {
     if((isPrivate && dataArr.length > 4) || (!isPrivate && dataArr.length > 5))
         messageArgs.args = (isPrivate) ? dataArr.slice(3).join(' '): dataArr.slice(5).join(' ');
 
-    messageArgs.botCommand = (isPrivate)? dataArr[3] : dataArr[4];
+    messageArgs.botCommand = (isPrivate) ? dataArr[2] : dataArr[4];
 
     return messageArgs;
 };
 
 IrcBot.prototype.onConnect = function() {
-
-    this.sendMessage('USER ' + this.opt.nick + ' testbot testbot :testbot123');
+    this.sendMessage('USER ' + this.opt.nick + ' hostname servername :'+this.opt.name);
     this.sendMessage('NICK ' + this.opt.nick);
 };
 
@@ -78,9 +77,11 @@ IrcBot.prototype.parseMessage = function(args) {
     var commands = this.opt.commands;
     console.log('message: '+JSON.stringify(args));
     for(var i=0;i<commands.length;i++) {
-        if(commands[i].test(args.rawstring)) {
+        //see if message matches command
+        if(commands[i].test(args.botCommand)) {
             var results = commands[i].action(args);
             for(var j=0;j<results.length;j++) {
+                console.log('sending: '+results[j]);
                 this.sendMessage(results[j]);
             }
             break;
@@ -99,6 +100,7 @@ IrcBot.prototype.joinChannels = function() {
         this.sendMessage('JOIN '+channels[i]);
     }
 };
+
 
 IrcBot.prototype.sendMessage = function(message) {
     this.conn.write(message+'\r\n');
