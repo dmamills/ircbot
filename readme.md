@@ -30,9 +30,14 @@ The Command object is used to take action when a bot hears it's name in any chan
 Example: 
 
 ```javascript
-   var c = new Command('Hello','echos back hello and the speakers name',/HELLO/,function(args) {
-      return (isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Dont PM me!'] :['PRIVMSG '+args.roomname + ' :Hello '+ args.speakername + '!'];
-   });
+
+  function onHello(args) {
+    var pvtMessage = Messages.pvtMsg(args.speakername, 'Hello ' + args.speakername + ' args: ' + args.args);
+        var roomMessage = Messages.roomMsg(args.roomname,'Hello '+ args.speakername + '! args: ' + args.args );
+        return (args.isPrivate) ? [pvtMessage] : [roomMessage];
+  }
+  
+  var c = new Command('Hello','echos back hello and the speakers name',/HELLO/,onHello);
 ```
 
 ### Command arguments
