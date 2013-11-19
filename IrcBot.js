@@ -25,7 +25,7 @@ IrcBot.prototype.onData = function(data) {
 
     //REPLY TO PINGS
     if(/PING/.test(data)) {
-        this.sendMessage('PONG ' + this.opt.hostname);
+        this.sendMessage('PONG :' + this.opt.hostname);
     }
 
     //Our name has been said
@@ -58,7 +58,7 @@ IrcBot.prototype.generateMessageArgs = function(dataArr,isPrivate) {
     if((isPrivate && dataArr.length > 4) || (!isPrivate && dataArr.length > 5))
         messageArgs.args = (isPrivate) ? dataArr.slice(4).join(' '): dataArr.slice(5).join(' ');
 
-    messageArgs.botcommand = (isPrivate) ? dataArr[3] : dataArr[4]; 
+    messageArgs.botcommand = (isPrivate) ? dataArr[3] : dataArr[4];
     messageArgs.botcommand = messageArgs.botcommand.slice(1);
     return messageArgs;
 };
