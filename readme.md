@@ -33,8 +33,8 @@ Example:
 
   function onHello(args) {
     var pvtMessage = Messages.pvtMsg(args.speakername, 'Hello ' + args.speakername + ' args: ' + args.args);
-        var roomMessage = Messages.roomMsg(args.roomname,'Hello '+ args.speakername + '! args: ' + args.args );
-        return (args.isPrivate) ? [pvtMessage] : [roomMessage];
+    var roomMessage = Messages.roomMsg(args.roomname,'Hello '+ args.speakername + '! args: ' + args.args );
+    return (args.isPrivate) ? [pvtMessage] : [roomMessage];
   }
   
   var c = new Command('Hello','echos back hello and the speakers name',/HELLO/,onHello);
