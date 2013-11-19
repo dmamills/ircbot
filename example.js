@@ -1,6 +1,8 @@
-var IrcBot = require('./IrcBot'),
-    Command = require('./command');
+var IrcBot = require('./lib/IrcBot'),
+    Command = require('./lib/Command');
 
+//var IrcBot = require('./IrcBot'),
+//    Command = require('./command');
 
 function onHello(args) {
     return (args.isPrivate) ? ['PRIVMSG ' + args.speakername + ' :Hello ' + args.speakername + ' args: '+ args.args] :

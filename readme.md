@@ -1,6 +1,6 @@
 #IrcBot
 
-A small bot extendable ircbot built in nodejs
+A small bot extendable ircbot built in coffescript and nodejs
 
 ###Usage
 ```javascript
@@ -47,6 +47,23 @@ Passed to the action function is an arguments object containing information abou
 * ```args``` any additional arguments to the command.
 
 
+### Message Helper
+
+Creates strings for various irc commands
+
+```
+   var Messages = require('IrcBot').Messages;
+   Messages.join(channel);
+   Messages.pong(servername);
+   Messages.user(nick,host,server,realname);
+   Messages.nick(nick);
+   Messages.pvtMsg(nick,message);
+   Messages.roomMsg(channel,message);
+   Messages.quit(reason);
+   Messages.mode(channel,mode,nick);
+```
+
+
 ### Todo
 
 * SSL
@@ -80,4 +97,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
->>>>>>> 008fc6279338cfd601a1df3c09356c259d181fd0
