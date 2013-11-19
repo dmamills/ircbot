@@ -12,7 +12,7 @@ function IrcBot(options) {
 }
 
 IrcBot.prototype.onData = function(data) {
-
+    console.log(data);
     //Get hostname 
     if(!this.opt.hostname) {
         this.opt.hostname = data.split(' ')[0].substr(1);
@@ -59,7 +59,8 @@ IrcBot.prototype.generateMessageArgs = function(dataArr,isPrivate) {
         messageArgs.args = (isPrivate) ? dataArr.slice(4).join(' '): dataArr.slice(5).join(' ');
 
     messageArgs.botcommand = (isPrivate) ? dataArr[3] : dataArr[4];
-    messageArgs.botcommand = messageArgs.botcommand.slice(1);
+    if (isPrivate) messageArgs.botcommand = messageArgs.botcommand.slice(1);
+    console.log(messageArgs);
     return messageArgs;
 };
 
@@ -74,7 +75,7 @@ IrcBot.prototype.onConnect = function() {
 */
 IrcBot.prototype.parseMessage = function(args) {
     var commands = this.opt.commands;
-    console.log('message: '+JSON.stringify(args));
+    //console.log('message: '+JSON.stringify(args));
     for(var i=0;i<commands.length;i++) {
         //see if message matches command
         if(commands[i].test(args.botcommand)) {

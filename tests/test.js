@@ -1,5 +1,5 @@
-var IrcBot = require('./../IrcBot'),
-    Command = require('./../command'),
+var IrcBot = require('./../lib/IrcBot'),
+    Command = require('./../lib/Command'),
     should = require('should');
 
 describe('IrcBot',function(){
