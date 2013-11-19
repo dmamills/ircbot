@@ -12,12 +12,10 @@ function IrcBot(options) {
 }
 
 IrcBot.prototype.onData = function(data) {
-    console.log(data);
 
     //Get hostname 
     if(!this.opt.hostname) {
         this.opt.hostname = data.split(' ')[0].substr(1);
-        console.log('stored hostname:' + this.opt.hostname);
     }
 
     //Response of successful connection
@@ -43,12 +41,13 @@ IrcBot.prototype.onData = function(data) {
 
 IrcBot.prototype.generateMessageArgs = function(dataArr,isPrivate) {
 
-    var speaker = dataArr[0].substr(1,dataArr[0].indexOf('!')-1);
+    var speaker = dataArr[0].substr(1,dataArr[0].indexOf('!')-1),
+        hostname = dataArr[0].slice(dataArr[0].indexOf('!')+2);
 
     var messageArgs = {
         isPrivate:isPrivate,
         rawstring:dataArr.join(' '),
-        hostname:dataArr[0],
+        hostname:hostname,
         speakername:speaker
     };
     
@@ -57,10 +56,10 @@ IrcBot.prototype.generateMessageArgs = function(dataArr,isPrivate) {
     }
 
     if((isPrivate && dataArr.length > 4) || (!isPrivate && dataArr.length > 5))
-        messageArgs.args = (isPrivate) ? dataArr.slice(3).join(' '): dataArr.slice(5).join(' ');
+        messageArgs.args = (isPrivate) ? dataArr.slice(4).join(' '): dataArr.slice(5).join(' ');
 
-    messageArgs.botCommand = (isPrivate) ? dataArr[2] : dataArr[4];
-
+    messageArgs.botcommand = (isPrivate) ? dataArr[3] : dataArr[4]; 
+    messageArgs.botcommand = messageArgs.botcommand.slice(1);
     return messageArgs;
 };
 
@@ -78,7 +77,7 @@ IrcBot.prototype.parseMessage = function(args) {
     console.log('message: '+JSON.stringify(args));
     for(var i=0;i<commands.length;i++) {
         //see if message matches command
-        if(commands[i].test(args.botCommand)) {
+        if(commands[i].test(args.botcommand)) {
             var results = commands[i].action(args);
             for(var j=0;j<results.length;j++) {
                 console.log('sending: '+results[j]);
