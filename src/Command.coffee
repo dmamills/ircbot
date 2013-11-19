@@ -5,14 +5,7 @@ module.exports = class Command
     @regex = regex
     @action = action
   
-  name: ->
-    @name
-
-  description: ->
-    @description
-
-  test: (str) ->
-    @regex.test str
-
-  action: (str) ->
-    @action str
+  name: -> @name
+  description: -> @description
+  test: (str) -> @regex.test str
+  action: (str) -> @action str

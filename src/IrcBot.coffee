@@ -1,55 +1,34 @@
 net = require 'net'
+Parser = require './Parser'
+Messages = require './MessageTemplates'
 
 module.exports = class IrcBot
   constructor: (options) ->
     @opt = options
     @conn = null
     @nameRegex = new RegExp(@opt.nick)
+    @parser = new Parser
   
   onData: (data) ->
     console.log data
     if !@opt.hostname 
      @opt.hostname = data.split(' ')[0].substr 1
 
-    if /001/.test(data)      
-     @joinChannels()
-
+    if /001/.test data
+     @joinChannels() 
+    
     if /PING/.test(data) 
-     @sendMessage 'PONG :' + @opt.hostname
+     @sendMessage Messages.pong @opt.hostname
 
     if /PRIVMSG/.test(data) && @nameRegex.test(data)
-     splitData = data.trimRight(4).split ' '
-     messageArgs = @generateMessageArgs splitData,splitData[2][0] != '#'
-     @parseMessage messageArgs
+      messageArgs = @parser.parse data
+      console.log 'message ' + JSON.stringify messageArgs
+      @testCommands messageArgs
     return
 
-  generateMessageArgs: (dataArr,isPrivate) ->
-    speaker = dataArr[0].substr 1,dataArr[0].indexOf('!')-1
-    hostname = dataArr[0].slice dataArr[0].indexOf('!')+2
-    
-    messageArgs = { 
-           isPrivate:isPrivate 
-           rawstring:dataArr.join(' '),
-           hostname:hostname
-           speakername:speaker
-    }
-
-    if !isPrivate
-     messageArgs.roomname = dataArr[2]
-
-    if (isPrivate && dataArr.length > 4) || (!isPrivate && dataArr.length > 5)
-      messageArgs.args = if isPrivate then dataArr.slice(4).join(' ') else dataArr.slice(5).join(' ')
-
-    messageArgs.botcommand = if isPrivate then dataArr[3] else dataArr[4]
-
-    if isPrivate
-      messageArgs.botcommand = messageArgs.botcommand.slice(1)
-
-    return messageArgs
-
-  parseMessage: (args) ->
+  testCommands: (args) ->
     commands = @opt.commands
-    console.log 'message ' + JSON.stringify args
+    
     for command in commands
       if command.test args.botcommand
         results = command.action args
@@ -60,29 +39,29 @@ module.exports = class IrcBot
     return
 
   onConnect: ->
-    @sendMessage 'USER ' + @opt.nick + ' hostname servername ' + @opt.name
-    @sendMessage 'NICK ' + @opt.nick
+    @sendMessage Messages.user @opt.nick,'hostname','servername ',@opt.name
+    @sendMessage Messages.nick @opt.nick
+    console.log 'connected.'
     return
 
   joinChannels: ->
     channels = @opt.channels
 
     for channel in channels
-      @sendMessage 'JOIN ' + channel
+      console.log 'JOINING ' + channel
+      @sendMessage Messages.join channel
     return
 
   sendMessage: (message) ->
-    @conn.write message + '\r\n'
-    return
+   @conn.write message + '\r\n'
+   return
 
   connect: ->
     @conn = net.connect {
       host:@opt.host,
       port:@opt.port
-    },(data) -> 
-       console.log('Connected.')
-       return
+    },@onConnect.bind @
+    
     @conn.setEncoding 'utf-8'
     @conn.on 'data', @onData.bind @
-    @conn.on 'connect', @onConnect.bind @
     return

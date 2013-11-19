@@ -14,13 +14,15 @@ module.exports = function(grunt){
             compile: {
                 files: {
                     'lib/IrcBot.js': 'src/IrcBot.coffee',
-                    'lib/Command.js': 'src/Command.coffee'
+                    'lib/Command.js': 'src/Command.coffee',
+                    'lib/Parser.js': 'src/Parser.coffee',
+                    'lib/MessageTemplates.js':'src/MessageTemplates.coffee'
                 }
             }
         },
         watch: {
             files:['tests/*.js','src/*.coffee'],
-            tasks:['mochaTest','coffee']
+            tasks:['coffee','mochaTest']
         }
     });
     
@@ -28,5 +30,5 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.registerTask('default',['mochaTest','coffee','watch']);
+    grunt.registerTask('default',['coffee','mochaTest','watch']);
 };
