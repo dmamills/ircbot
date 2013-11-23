@@ -7,4 +7,6 @@ module.exports = {
   roomMsg: (room,message) -> 'PRIVMSG ' + room + ' :' + message
   quit: (reason) -> 'QUIT :' + reason
   mode: (channel,mode,nick) -> 'MODE ' + channel + ' ' + mode + ' ' + nick
+  names: (channel) -> 'NAMES ' + channel
+  topic: (channel,topic) -> 'TOPIC ' + channel + ' ' + topic 
 }

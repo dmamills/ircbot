@@ -1,13 +1,16 @@
 net = require 'net'
 Parser = require './Parser'
 Messages = require './MessageTemplates'
+Commander = require './Commander'
+Pigeon = require './Pigeon'
 
 module.exports = class IrcBot
   constructor: (options) ->
     @opt = options
-    @conn = null
     @nameRegex = new RegExp(@opt.nick)
     @parser = new Parser
+    @commander = new Commander @opt.commands
+    @pigeon = new Pigeon @opt.host,@opt.port, (@onConnect.bind @), (@onData.bind @)
   
   onData: (data) ->
     console.log data
@@ -18,7 +21,7 @@ module.exports = class IrcBot
      @joinChannels() 
     
     if /PING/.test(data) 
-     @sendMessage Messages.pong @opt.hostname
+     @pigeon.send Messages.pong @opt.hostname
 
     if /PRIVMSG/.test(data) && @nameRegex.test(data)
       messageArgs = @parser.parse data
@@ -28,40 +31,27 @@ module.exports = class IrcBot
 
   testCommands: (args) ->
     commands = @opt.commands
-    
     for command in commands
       if command.test args.botcommand
         results = command.action args
         for result in results
           console.log 'sending: ' + result
-          @sendMessage result
+          @pigeon.send result
         break
     return
 
   onConnect: ->
-    @sendMessage Messages.user @opt.nick,'hostname','servername ',@opt.name
-    @sendMessage Messages.nick @opt.nick
+    @pigeon.send Messages.user @opt.nick,' hostname ',' servername ',@opt.name
+    @pigeon.send Messages.nick @opt.nick
     console.log 'connected.'
     return
 
   joinChannels: ->
     channels = @opt.channels
-
     for channel in channels
-      console.log 'JOINING ' + channel
-      @sendMessage Messages.join channel
+      @pigeon.send Messages.join channel
     return
-
-  sendMessage: (message) ->
-   @conn.write message + '\r\n'
-   return
-
+  
   connect: ->
-    @conn = net.connect {
-      host:@opt.host,
-      port:@opt.port
-    },@onConnect.bind @
-    
-    @conn.setEncoding 'utf-8'
-    @conn.on 'data', @onData.bind @
+    @pigeon.connect()
     return

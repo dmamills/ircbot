@@ -16,7 +16,9 @@ module.exports = function(grunt){
                     'lib/IrcBot.js': 'src/IrcBot.coffee',
                     'lib/Command.js': 'src/Command.coffee',
                     'lib/Parser.js': 'src/Parser.coffee',
-                    'lib/MessageTemplates.js':'src/MessageTemplates.coffee'
+                    'lib/MessageTemplates.js':'src/MessageTemplates.coffee',
+                    'lib/Commander.js': 'src/Commander.coffee',
+                    'lib/Pigeon.js':'src/Pigeon.coffee'
                 }
             }
         },
