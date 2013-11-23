@@ -3,11 +3,11 @@ module.exports = function(grunt){
         pkg: grunt.file.readJSON('package.json'),
         
         mochaTest: {
-            tests: {
+            BotTests: {
                 options: {
                     reporter:'nyan'
                 },
-                src:['tests/test.js']
+                src:['tests/bot_test.js','tests/messagetemplate_tests.js','tests/command_tests.js','tests/parser_tests.js']
             }
         },
         coffee: {
