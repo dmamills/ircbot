@@ -48,6 +48,7 @@ Passed to the action function is an arguments object containing information abou
 * ```isPrivate``` true if a private message, false if a channel message.
 * ```hostname``` the senders entire hostname.
 * ```speakername``` the name of the sender.
+* ```roomname``` the name of channel.
 * ```botcommand``` the command sent by speakername.
 * ```args``` any additional arguments to the command.
 
