@@ -4,6 +4,8 @@ module.exports = class Commander extends EventEmitter
   constructor: (commands) ->
     @commands = commands
     for command in commands
+        if command.regex.toString() === '/HELP/'
+            throw 'Cannot use regex /HELP/'
         @on command.name,command.action
 
   checkCommands: (args) ->

@@ -15,7 +15,8 @@ function onQuit(args) {
 
 var commands = [
     new Command('Hello','echos hello back', /HELLO/ ,onHello),
-    new Command('Quit','leaves a channel', /QUIT/,onQuit)
+    new Command('Quit','leaves a channel', /QUIT/,onQuit),
+    new Command('test','asdas',/HELP/,function(){})
 ];
 
 var options = { 
