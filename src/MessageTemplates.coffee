@@ -9,4 +9,5 @@ module.exports = {
   mode: (channel,mode,nick) -> 'MODE ' + channel + ' ' + mode + ' ' + nick
   names: (channel) -> 'NAMES ' + channel
   topic: (channel,topic) -> 'TOPIC ' + channel + ' ' + topic 
+  part: (channel) -> 'PART ' + channel
 }

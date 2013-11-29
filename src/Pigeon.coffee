@@ -19,6 +19,11 @@ module.exports = class Pigeon
         @conn.on 'data', @onData
         return
 
+    sendResults: (results) ->
+        for result in results
+            console.log 'sending: ' + result
+            @send result
+
     send: (message) ->
         @conn.write message + '\r\n'
         return
