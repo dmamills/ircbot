@@ -57,7 +57,7 @@ Passed to the action function is an arguments object containing information abou
 
 Creates strings for various irc commands
 
-```
+```javascript
    var Messages = require('IrcBot').Messages;
    Messages.join(channel);
    Messages.pong(servername);
