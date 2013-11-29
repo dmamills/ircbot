@@ -53,6 +53,13 @@ Passed to the action function is an arguments object containing information abou
 * ```botcommand``` the command sent by speakername.
 * ```args``` any additional arguments to the command.
 
+### Help Command
+
+The HELP and DESC commands are reserved. 
+
+* ```HELP``` will return a list of all commands the bot provides.
+* ```DESC <command name>``` will return a command's description. 
+
 
 ### Message Helper
 
@@ -73,12 +80,10 @@ Creates strings for various irc commands. Useful for command objects
    Messages.part(channel);
 ```
 
-
 ### Todo
 
 * SSL
 * Connection state
-* Autojoin
 * Nick Serv auth
 
 #### Pull requests accepted!

@@ -10,13 +10,26 @@ function onHello(args) {
 }
 
 function onQuit(args) {
-    return [Messages.part(args.roomname)];
+    return [ Messages.part(args.roomname) ];
+}
+
+function goCrazy(args) {
+    var a = [],m = args.args.split(' ')[0], s = '';
+    for(var i=0; i < m;i++) {
+         if(i < (m/2))
+            s += '!';
+         else
+            s = s.slice(1);
+
+        a.push(Messages.roomMsg(args.roomname,s));
+    }
+    return a;
 }
 
 var commands = [
     new Command('Hello','echos hello back', /HELLO/ ,onHello),
     new Command('Quit','leaves a channel', /QUIT/,onQuit),
-    new Command('test','asdas',/HELP/,function(){})
+    new Command('Crazy','goes crazy',/CRAZY/,goCrazy)
 ];
 
 var options = { 
