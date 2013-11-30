@@ -1,4 +1,5 @@
 net = require 'net'
+Messages = require './MessageTemplates'
 
 module.exports = class Pigeon
     @conn = null
@@ -23,6 +24,12 @@ module.exports = class Pigeon
         for result in results
             console.log 'sending: ' + result
             @send result
+
+    reply: (messageArgs,message) ->
+        if messageArgs.isPrivate
+            @send Messages.pvtMsg messageArgs.speakername,message
+        else
+            @send Messages.roomMsg messageArgs.roomname,message
 
     send: (message) ->
         @conn.write message + '\r\n'

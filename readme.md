@@ -78,6 +78,17 @@ Creates strings for various irc commands. Useful for command objects
    Messages.name(channel);
    Messages.topic(channel,topic);
    Messages.part(channel);
+   Messages.oper(name,password)
+   Messages.squit(server,reason)
+   Messages.list(channel)
+   Messages.invite(nick,channel)
+   Messages.kick(nick,channel)
+   Message.notice(target,text)
+   Messages.who(mask)
+   Messages.whois(target)
+   Messages.whowas(target)
+   Messages.kill(nick,comment)
+   Messages.away(text)
 ```
 
 ### Todo

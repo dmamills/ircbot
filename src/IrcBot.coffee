@@ -7,6 +7,8 @@ Pigeon = require './Pigeon'
 module.exports = class IrcBot
   constructor: (options) ->
     @opt = options
+
+    @opt.unknownCommand = options.unknownCommand || 'Command not known.';
     @nameRegex = new RegExp(@opt.nick)
     @parser = new Parser
     @commander = new Commander @opt.commands
@@ -14,33 +16,43 @@ module.exports = class IrcBot
   
   onData: (data) ->
     console.log data
+    sd = data.split(' ')
+
+    #store hostname
     if !@opt.hostname 
-     @opt.hostname = data.split(' ')[0].substr 1
+     @opt.hostname = sd[0].substr 1
 
-    if /001/.test(data)
-     @joinChannels() 
-    
-    if /PING/.test(data)
-     @pigeon.send Messages.pong @opt.hostname
+    #if connected parse messages
+    if @connected
+      if /PING/.test(sd[0])
+       @pigeon.send Messages.pong @opt.hostname
 
-    if /PRIVMSG/.test(data) &&@nameRegex.test(data)
-      messageArgs = @parser.parse data
+      if /PRIVMSG/.test(sd[1]) &&@nameRegex.test(data)
+        messageArgs = @parser.parse data
 
-      if /HELP/.test(data)
-        @reply messageArgs,@commander.help messageArgs
-        return
+        if /HELP/.test(data)
+          @pigeon.reply messageArgs,@commander.help messageArgs
+          return
 
-      if /DESC/.test(data)
-        @reply messageArgs,@commander.helpCommand messageArgs.args.split(' ')[0]
-        return
+        if /DESC/.test(data)
+          @pigeon.reply messageArgs,@commander.helpCommand messageArgs.args.split(' ')[0]
+          return
 
-      console.log 'message ' + JSON.stringify messageArgs
-      results = @commander.checkCommands messageArgs
-      if results != null || results != undefined
-        @pigeon.sendResults results
+        console.log 'message ' + JSON.stringify messageArgs
+        results = @commander.checkCommands messageArgs
 
-    if /KICK/.test(data) && @nameRegex.test(data) && @opt.autojoin 
-      @pigeon.send Messages.join data.split(' ')[2]  
+        if results == undefined
+          @pigeon.reply messageArgs,@opt.unknownCommand
+        else
+          @pigeon.sendResults results
+
+      if /KICK/.test(data) && @nameRegex.test(data) && @opt.autojoin 
+        @pigeon.send Messages.join data.split(' ')[2]  
+
+    #The first message sent after client registration.
+    if sd[1] == '001'
+      @joinChannels()
+      @connected = true
 
     return
 
@@ -50,12 +62,7 @@ module.exports = class IrcBot
     console.log 'connected.'
     return
 
-  reply: (args,message) ->
-    if args.isPrivate
-      @pigeon.send Messages.pvtMsg args.speakername,message
-    else
-      @pigeon.send Messages.roomMsg args.roomname,message 
-    return
+
 
   joinChannels: ->
     channels = @opt.channels

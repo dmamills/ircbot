@@ -38,6 +38,7 @@ var options = {
     nick:'testbot',
     channels: ['#room1','#room2','#room3'],
     autojoin:true,
+    unknownCommand:'I dont understand.',
     commands:commands
 };
 
