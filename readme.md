@@ -12,7 +12,9 @@ A small bot extendable ircbot built in coffescript and nodejs
                  nick:'IrcBot', 
                  name:'Internet Relay Chat Robot',
                  commands:[Commands], //array of command objects
+                 unknownCommand: '????', //optional, will reply with this if no command matches
                  autojoin:true //optional will rejoin any channel kicked from
+                 autoConnect:false //if true you don't need to call bot.connect()
                }
       var bot = new IrcBot(options);
       bot.connect();
@@ -51,7 +53,7 @@ Passed to the action function is an arguments object containing information abou
 * ```speakername``` the name of the sender.
 * ```roomname``` the name of channel.
 * ```botcommand``` the command sent by speakername.
-* ```args``` any additional arguments to the command.
+* ```args``` an array of any additional arguments to the command.
 
 ### Help Command
 
@@ -94,8 +96,8 @@ Creates strings for various irc commands. Useful for command objects
 ### Todo
 
 * SSL
-* Connection state
 * Nick Serv auth
+* Externally emitted Commands
 
 #### Pull requests accepted!
 

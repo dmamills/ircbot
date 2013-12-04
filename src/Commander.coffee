@@ -7,7 +7,7 @@ module.exports = class Commander extends EventEmitter
       if command.regex.toString() == '/HELP/'
         throw new Error('HELP is a reserved regexp')
       if command.regex.toString() == '/DESC/'
-        throw new Error('DESC is reserved regexp')
+        throw new Error('DESC is a reserved regexp')
     
       @on command.name,command.action
 

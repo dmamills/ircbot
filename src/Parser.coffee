@@ -20,7 +20,8 @@ module.exports = class Parser
      messageArgs.roomname = dataArr[2]
 
     if (isPrivate && dataArr.length > 4) || (!isPrivate && dataArr.length > 5)
-      messageArgs.args = if isPrivate then dataArr.slice(4).join(' ') else dataArr.slice(5).join(' ')
+
+      messageArgs.args = (if isPrivate then dataArr.slice(4).join(' ') else dataArr.slice(5).join(' ')).split(' ')
 
     messageArgs.botcommand = if isPrivate then dataArr[3].slice(1) else dataArr[4]
     return messageArgs

@@ -11,7 +11,8 @@ describe('Parser',function() {
 
             results.isPrivate.should.be.true;
             results.speakername.should.equal('unittester');
-            results.args.should.equal('arg1 arg2');
+            results.args.should.eql(['arg1', 'arg2']);
+            results.should.have.property('args').with.lengthOf(2);
             results.botcommand.should.equal('COMMAND');
             results.rawstring.should.equal(data);
             results.hostname.should.equal('unittester@666.666.666.666.the.ipofthebeast.com');
@@ -24,7 +25,9 @@ describe('Parser',function() {
 
             results.isPrivate.should.be.false;
             results.speakername.should.equal('unittester');
-            results.args.should.equal('arg1 arg2');
+            results.should.have.property('args').with.lengthOf(2);
+
+            results.args.should.eql(['arg1','arg2']);
             results.botcommand.should.equal('COMMAND');
             results.rawstring.should.equal(data);
             results.hostname.should.equal('unittester@666.666.666.666.the.ipofthebeast.com');

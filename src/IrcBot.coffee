@@ -13,6 +13,9 @@ module.exports = class IrcBot
     @parser = new Parser
     @commander = new Commander @opt.commands
     @pigeon = new Pigeon @opt.host,@opt.port, (@onConnect.bind @), (@onData.bind @)
+
+    if @opt.autoconnect
+      @pigeon.connect()
   
   onData: (data) ->
     console.log data
@@ -42,7 +45,8 @@ module.exports = class IrcBot
         results = @commander.checkCommands messageArgs
 
         if results == undefined
-          @pigeon.reply messageArgs,@opt.unknownCommand
+          if @opt.unknownCommand
+            @pigeon.reply messageArgs,@opt.unknownCommand
         else
           @pigeon.sendResults results
 
@@ -61,8 +65,6 @@ module.exports = class IrcBot
     @pigeon.send Messages.nick @opt.nick
     console.log 'connected.'
     return
-
-
 
   joinChannels: ->
     channels = @opt.channels
