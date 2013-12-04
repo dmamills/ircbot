@@ -12,7 +12,7 @@ function ops(names) {
             return [ Messages.roomMsg(args.roomname,'OK! Giving op to:' +args.speakername),
                      Messages.mode(args.roomname,'+o',args.speakername) ];
         }
-    }
+    };
 }
 
 var opList = ops(['dmamills']);

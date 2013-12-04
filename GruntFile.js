@@ -7,7 +7,11 @@ module.exports = function(grunt){
                 options: {
                     reporter:'nyan'
                 },
-                src:['tests/bot_test.js','tests/messagetemplate_tests.js','tests/command_tests.js','tests/parser_tests.js']
+                src:['tests/bot_test.js',
+                     'tests/messagetemplate_tests.js',
+                     'tests/command_tests.js',
+                     'tests/parser_tests.js',
+                     'tests/commander_tests.js']
             }
         },
         coffee: {

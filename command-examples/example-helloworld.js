@@ -9,17 +9,17 @@ function onHello(args) {
     return (args.isPrivate) ? [pvtMessage] : [roomMessage];
 }
 
-var commands = [
-    new Command('Hello','echos hello back', /HELLO/ ,onHello)
-];
+var helloCommand = new Command('Hello','echos hello back', /HELLO/ ,onHello)
 
 var options = { 
-    host:'irc.freenode.net',
+    host:'localhost',
     port:6667,
-    nick:'testbot123',
-    channels: ['#testmillsroom','#testmillsroom2'],
-    commands:commands
+    nick:'testbot',
+    channels: ['#room1','#room2','#room3'],
+    autojoin:true,
+    autoconnect:true,
+    unknownCommand:'I dont understand.',
+    commands:[helloCommand]
 };
 
 var ircbot = new IrcBot(options);
-ircbot.connect();

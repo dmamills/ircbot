@@ -8,10 +8,13 @@ A small extendable ircbot built in coffescript and nodejs
    var options = { 
                  host:'hostname',
                  port:6667,
-                 channels:['#some','#channels'],
-                 nick:'IrcBot',
+                 channels:['#some','#channels'], //array of channels to join
+                 nick:'IrcBot', 
                  name:'Internet Relay Chat Robot',
-                 commands:[Commands]
+                 commands:[Commands], //array of command objects
+                 unknownCommand: '????', //optional, will reply with this if no command matches
+                 autojoin:true //optional will rejoin any channel kicked from
+                 autoConnect:false //if true you don't need to call bot.connect()
                }
       var bot = new IrcBot(options);
       bot.connect();
@@ -50,12 +53,19 @@ Passed to the action function is an arguments object containing information abou
 * ```speakername``` the name of the sender.
 * ```roomname``` the name of channel.
 * ```botcommand``` the command sent by speakername.
-* ```args``` any additional arguments to the command.
+* ```args``` an array of any additional arguments to the command.
+
+### Help Command
+
+The HELP and DESC commands are reserved. 
+
+* ```HELP``` will return a list of all commands the bot provides.
+* ```DESC <command name>``` will return a command's description. 
 
 
 ### Message Helper
 
-Creates strings for various irc commands
+Creates strings for various irc commands. Useful for command objects
 
 ```javascript
    var Messages = require('IrcBot').Messages;
@@ -67,39 +77,30 @@ Creates strings for various irc commands
    Messages.roomMsg(channel,message);
    Messages.quit(reason);
    Messages.mode(channel,mode,nick);
+   Messages.name(channel);
+   Messages.topic(channel,topic);
+   Messages.part(channel);
+   Messages.oper(name,password)
+   Messages.squit(server,reason)
+   Messages.list(channel)
+   Messages.invite(nick,channel)
+   Messages.kick(nick,channel)
+   Message.notice(target,text)
+   Messages.who(mask)
+   Messages.whois(target)
+   Messages.whowas(target)
+   Messages.kill(nick,comment)
+   Messages.away(text)
 ```
-
 
 ### Todo
 
 * SSL
-* Connection state
-* Autojoin
 * Nick Serv auth
+* Externally emitted Commands
 
 #### Pull requests accepted!
 
 ### License
-
-(The MIT License)
-
-Copyright (c) 2013 Daniel Mills &lt;mills.dma@gmail.com&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Licensed under the MIT license.
+Copyright 2013 Daniel Mills &lt;mills.dma@gmail.com&gt;

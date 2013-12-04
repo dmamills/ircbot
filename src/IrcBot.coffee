@@ -7,37 +7,57 @@ Pigeon = require './Pigeon'
 module.exports = class IrcBot
   constructor: (options) ->
     @opt = options
+
+    @opt.unknownCommand = options.unknownCommand || 'Command not known.';
     @nameRegex = new RegExp(@opt.nick)
     @parser = new Parser
     @commander = new Commander @opt.commands
     @pigeon = new Pigeon @opt.host,@opt.port, (@onConnect.bind @), (@onData.bind @)
+
+    if @opt.autoconnect
+      @pigeon.connect()
   
   onData: (data) ->
     console.log data
+    sd = data.split(' ')
+
+    #store hostname
     if !@opt.hostname 
-     @opt.hostname = data.split(' ')[0].substr 1
+     @opt.hostname = sd[0].substr 1
 
-    if /001/.test data
-     @joinChannels() 
-    
-    if /PING/.test(data) 
-     @pigeon.send Messages.pong @opt.hostname
+    #if connected parse messages
+    if @connected
+      if /PING/.test(sd[0])
+       @pigeon.send Messages.pong @opt.hostname
 
-    if /PRIVMSG/.test(data) && @nameRegex.test(data)
-      messageArgs = @parser.parse data
-      console.log 'message ' + JSON.stringify messageArgs
-      @testCommands messageArgs
-    return
+      if /PRIVMSG/.test(sd[1]) &&@nameRegex.test(data)
+        messageArgs = @parser.parse data
 
-  testCommands: (args) ->
-    commands = @opt.commands
-    for command in commands
-      if command.test args.botcommand
-        results = command.action args
-        for result in results
-          console.log 'sending: ' + result
-          @pigeon.send result
-        break
+        if /HELP/.test(data)
+          @pigeon.reply messageArgs,@commander.help messageArgs
+          return
+
+        if /DESC/.test(data)
+          @pigeon.reply messageArgs,@commander.helpCommand messageArgs.args.split(' ')[0]
+          return
+
+        console.log 'message ' + JSON.stringify messageArgs
+        results = @commander.checkCommands messageArgs
+
+        if results == undefined
+          if @opt.unknownCommand
+            @pigeon.reply messageArgs,@opt.unknownCommand
+        else
+          @pigeon.sendResults results
+
+      if /KICK/.test(data) && @nameRegex.test(data) && @opt.autojoin 
+        @pigeon.send Messages.join data.split(' ')[2]  
+
+    #The first message sent after client registration.
+    if sd[1] == '001'
+      @joinChannels()
+      @connected = true
+
     return
 
   onConnect: ->
