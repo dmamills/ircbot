@@ -1,6 +1,6 @@
 #IrcBot
 
-A small bot extendable ircbot built in coffescript and nodejs
+A small extendable ircbot built in coffescript and nodejs
 
 ###Usage
 ```javascript
